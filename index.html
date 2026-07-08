@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WAKE UP, NEO // Birthday.exe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#050806;
+    --panel:#0b120d;
+    --green:#00ff66;
+    --green-dim:#0b8f3f;
+    --green-glow:rgba(0,255,102,0.35);
+    --amber:#ffb000;
+    --red:#ff3b3b;
+    --blue:#3ba7ff;
+    --ink:#d9ffe4;
+    --mono-body:'JetBrains Mono', monospace;
+    --mono-display:'Share Tech Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--mono-body);
+    overflow-x:hidden;
+    scroll-behavior:smooth;
+  }
+  #rain{
+    position:fixed; inset:0; z-index:0; opacity:0.55;
+  }
+  .noise-vignette{
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    background:radial-gradient(ellipse at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.75) 100%);
+  }
+  main, header, footer{ position:relative; z-index:2; }
+
+  /* ---------- GATE ---------- */
+  #gate{
+    position:fixed; inset:0; z-index:50;
+    background:#000;
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column;
+    gap:22px;
+    transition:opacity .6s ease, visibility .6s ease;
+  }
+  #gate.hidden{ opacity:0; visibility:hidden; pointer-events:none; }
+  #gate p.line{
+    font-family:var(--mono-display);
+    color:var(--green);
+    font-size:clamp(13px,2.2vw,17px);
+    letter-spacing:1px;
+    opacity:0;
+    animation:typeIn .4s forwards;
+  }
+  #gate p.line span.cursor{
+    display:inline-block; width:8px; height:14px; background:var(--green);
+    margin-left:4px; animation:blink 1s steps(1) infinite;
+  }
+  @keyframes typeIn{ to{ opacity:1; } }
+  @keyframes blink{ 50%{ opacity:0; } }
+  #enterBtn{
+    margin-top:18px;
+    font-family:var(--mono-display);
+    background:transparent;
+    color:var(--green);
+    border:1px solid var(--green);
+    padding:14px 30px;
+    font-size:15px;
+    letter-spacing:3px;
+    cursor:pointer;
+    box-shadow:0 0 18px var(--green-glow);
+    transition:background .2s, color .2s, transform .15s;
+    opacity:0;
+  }
+  #enterBtn.show{ animation:fadeUp .6s forwards; }
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+  #enterBtn:hover{ background:var(--green); color:#000; transform:translateY(-2px); }
+
+  /* ---------- HERO ---------- */
+  header{
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding:40px 20px;
+  }
+  .eyebrow{
+    font-family:var(--mono-display);
+    color:var(--green-dim);
+    letter-spacing:5px;
+    font-size:12px;
+    margin-bottom:18px;
+    border:1px solid var(--green-dim);
+    padding:6px 14px;
+    border-radius:2px;
+  }
+  h1.glitch{
+    font-family:var(--mono-display);
+    font-size:clamp(2.4rem, 8vw, 6rem);
+    line-height:1.05;
+    margin:0;
+    color:var(--ink);
+    position:relative;
+    text-shadow:0 0 12px var(--green-glow);
+  }
+  h1.glitch .layer{
+    position:absolute; top:0; left:0; width:100%;
+    clip-path:inset(0 0 0 0);
+  }
+  h1.glitch .layer.g1{ color:var(--red); animation:glitch1 3.2s infinite linear; }
+  h1.glitch .layer.g2{ color:var(--blue); animation:glitch2 3.6s infinite linear; }
+  @keyframes glitch1{
+    0%,89%,100%{ clip-path:inset(0 0 0 0); transform:translate(0,0); opacity:0; }
+    90%{ clip-path:inset(10% 0 60% 0); transform:translate(-3px,-1px); opacity:0.8; }
+    92%{ clip-path:inset(60% 0 5% 0); transform:translate(3px,1px); opacity:0.8; }
+    94%{ opacity:0; }
+  }
+  @keyframes glitch2{
+    0%,84%,100%{ clip-path:inset(0 0 0 0); transform:translate(0,0); opacity:0; }
+    85%{ clip-path:inset(70% 0 5% 0); transform:translate(3px,0); opacity:0.7; }
+    87%{ clip-path:inset(5% 0 80% 0); transform:translate(-3px,0); opacity:0.7; }
+    89%{ opacity:0; }
+  }
+  .subhead{
+    margin-top:22px;
+    font-size:clamp(1rem,2.4vw,1.3rem);
+    color:var(--green);
+    max-width:620px;
+  }
+  .subhead b{ color:var(--amber); }
+  .scroll-cue{
+    margin-top:60px;
+    font-size:12px;
+    letter-spacing:3px;
+    color:var(--green-dim);
+    animation:bob 2s ease-in-out infinite;
+  }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+
+  /* ---------- SECTIONS ---------- */
+  section{
+    max-width:880px;
+    margin:0 auto;
+    padding:100px 24px;
+  }
+  .tag{
+    font-family:var(--mono-display);
+    color:var(--green-dim);
+    letter-spacing:3px;
+    font-size:12px;
+    margin-bottom:10px;
+    display:block;
+  }
+  h2{
+    font-family:var(--mono-display);
+    font-size:clamp(1.6rem,4vw,2.4rem);
+    color:var(--ink);
+    margin:0 0 30px 0;
+    border-left:3px solid var(--green);
+    padding-left:16px;
+  }
+
+  /* pill choice */
+  .pills{
+    display:flex; gap:24px; flex-wrap:wrap; justify-content:center; margin-top:40px;
+  }
+  .pill-card{
+    flex:1 1 240px;
+    background:var(--panel);
+    border:1px solid var(--green-dim);
+    border-radius:6px;
+    padding:28px 22px;
+    text-align:center;
+    cursor:pointer;
+    transition:transform .2s, box-shadow .2s;
+  }
+  .pill-card:hover{ transform:translateY(-4px); }
+  .pill-card.blue{ border-color:var(--blue); }
+  .pill-card.blue:hover{ box-shadow:0 0 24px rgba(59,167,255,0.35); }
+  .pill-card.red{ border-color:var(--red); }
+  .pill-card.red:hover{ box-shadow:0 0 24px rgba(255,59,59,0.35); }
+  .pill-dot{
+    width:34px; height:14px; border-radius:20px; margin:0 auto 16px;
+  }
+  .pill-card.blue .pill-dot{ background:var(--blue); box-shadow:0 0 14px var(--blue); }
+  .pill-card.red .pill-dot{ background:var(--red); box-shadow:0 0 14px var(--red); }
+  .pill-card h3{ font-family:var(--mono-display); margin:0 0 8px; font-size:1.1rem; letter-spacing:1px; }
+  .pill-card p{ font-size:0.9rem; color:#a9d9b8; margin:0; }
+  .reveal{
+    margin-top:26px; text-align:center;
+    font-family:var(--mono-display);
+    color:var(--amber);
+    min-height:24px;
+    font-size:1rem;
+    letter-spacing:0.5px;
+  }
+
+  /* facts / log */
+  .log{
+    background:var(--panel);
+    border:1px solid var(--green-dim);
+    border-radius:6px;
+    padding:20px 22px;
+    font-size:0.92rem;
+    line-height:1.9;
+  }
+  .log .prompt{ color:var(--green); margin-right:8px; }
+  .log .comment{ color:#6f9c81; }
+
+  /* countdown */
+  .countdown{
+    display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-top:36px;
+  }
+  .cbox{
+    background:var(--panel);
+    border:1px solid var(--green);
+    border-radius:6px;
+    min-width:88px;
+    padding:18px 10px;
+    text-align:center;
+  }
+  .cbox .num{
+    font-family:var(--mono-display);
+    font-size:2.1rem;
+    color:var(--green);
+    text-shadow:0 0 10px var(--green-glow);
+  }
+  .cbox .lbl{
+    font-size:0.7rem;
+    letter-spacing:2px;
+    color:#a9d9b8;
+    margin-top:6px;
+  }
+
+  /* cake */
+  .cake-wrap{
+    text-align:center;
+  }
+  .cake-btn{
+    font-family:var(--mono-display);
+    background:transparent;
+    color:var(--amber);
+    border:1px solid var(--amber);
+    padding:14px 26px;
+    font-size:14px;
+    letter-spacing:2px;
+    cursor:pointer;
+    border-radius:4px;
+    margin-top:24px;
+    transition:background .2s, color .2s;
+  }
+  .cake-btn:hover{ background:var(--amber); color:#000; }
+  .cake-msg{
+    margin-top:22px;
+    font-size:1.05rem;
+    color:var(--ink);
+    min-height:28px;
+  }
+  #confetti-canvas{
+    position:fixed; inset:0; z-index:40; pointer-events:none;
+  }
+
+  footer{
+    text-align:center;
+    padding:60px 24px 100px;
+    font-size:0.8rem;
+    color:#4d7a5c;
+    letter-spacing:1px;
+  }
+
+  /* audio toggle */
+  #audioToggle{
+    position:fixed; bottom:18px; right:18px; z-index:45;
+    background:var(--panel);
+    border:1px solid var(--green);
+    color:var(--green);
+    font-family:var(--mono-body);
+    font-size:12px;
+    padding:10px 14px;
+    border-radius:20px;
+    cursor:pointer;
+    display:flex; align-items:center; gap:8px;
+    box-shadow:0 0 14px rgba(0,0,0,0.5);
+  }
+  #audioToggle .bars{ display:flex; gap:2px; align-items:flex-end; height:12px; }
+  #audioToggle .bars span{
+    width:3px; background:var(--green); display:block;
+    animation:eq 0.9s ease-in-out infinite;
+  }
+  #audioToggle.muted .bars span{ animation-play-state:paused; height:3px !important; }
+  #audioToggle .bars span:nth-child(1){ animation-delay:0s; }
+  #audioToggle .bars span:nth-child(2){ animation-delay:.2s; }
+  #audioToggle .bars span:nth-child(3){ animation-delay:.4s; }
+  @keyframes eq{ 0%,100%{ height:3px; } 50%{ height:12px; } }
+
+  @media (prefers-reduced-motion: reduce){
+    h1.glitch .layer{ animation:none !important; }
+    .scroll-cue{ animation:none !important; }
+    #audioToggle .bars span{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="rain"></canvas>
+<div class="noise-vignette"></div>
+<canvas id="confetti-canvas"></canvas>
+
+<!-- GATE -->
+<div id="gate">
+  <p class="line" style="animation-delay:.1s">&gt; INITIALIZING BIRTHDAY.SYS<span class="cursor"></span></p>
+  <p class="line" style="animation-delay:.9s">&gt; LOCATING TARGET... FOUND: NEO</p>
+  <p class="line" style="animation-delay:1.7s">&gt; STATUS: STILL THINKS HE'S THE ONE</p>
+  <p class="line" style="animation-delay:2.5s">&gt; DATE CONFIRMED: JULY 16</p>
+  <button id="enterBtn">ENTER THE MATRIX</button>
+</div>
+
+<header>
+  <span class="eyebrow">SIMULATION // BIRTHDAY BUILD v16.07</span>
+  <h1 class="glitch" data-text="WAKE UP, NEO">
+    <span class="base">WAKE UP, FATASS NEO</span>
+    <span class="layer g1" aria-hidden="true">WAKE UP, FATASS NEO</span>
+    <span class="layer g2" aria-hidden="true">WAKE UP, FATASS NEO</span>
+  </h1>
+  <p class="subhead">The Matrix has you. Also, it's <b>July 16</b>, which means cake has you too.</p>
+  <div class="scroll-cue">↓ scroll to follow the white rabbit ↓</div>
+</header>
+
+<main>
+
+  <section id="choice">
+    <span class="tag">01 // A CHOICE</span>
+    <h2>Choose your reality, Neo</h2>
+    <div class="pills">
+      <div class="pill-card blue" data-pill="blue">
+        <div class="pill-dot"></div>
+        <h3>BLUE PILL</h3>
+        <p>Believe you're still 21 forever. Ignorance, but with great fat ass.</p>
+      </div>
+      <div class="pill-card red" data-pill="red">
+        <div class="pill-dot"></div>
+        <h3>RED PILL</h3>
+        <p>Accept the truth: you're one year deeper into the legend.</p>
+      </div>
+    </div>
+    <div class="reveal" id="pillReveal"></div>
+  </section>
+
+  <section id="facts">
+    <span class="tag">02 // SYSTEM LOG</span>
+    <h2>Known glitches in the Neo simulation</h2>
+    <div class="log">
+      <div><span class="prompt">$</span> whoami</div>
+      <div style="margin-bottom:14px;">&gt; neo <span class="comment">// "the chosen assface," self-appointed</span></div>
+      <div><span class="prompt">$</span> uptime</div>
+      <div style="margin-bottom:14px;">&gt; one more year of runtime added, no reboot required</div>
+      <div><span class="prompt">$</span> ping reality</div>
+      <div style="margin-bottom:14px;">&gt; reply from reality: "still can't dodge bullets, but nice try"</div>
+      <div><span class="prompt">$</span> sudo make-birthday --legendary</div>
+      <div>&gt; permission granted. proceeding...</div>
+    </div>
+  </section>
+
+  <section id="countdown-section">
+    <span class="tag">03 // TIME REMAINING</span>
+    <h2>Countdown to July 16</h2>
+    <div class="countdown" id="countdown">
+      <div class="cbox"><div class="num" id="cd-days">00</div><div class="lbl">DAYS</div></div>
+      <div class="cbox"><div class="num" id="cd-hours">00</div><div class="lbl">HOURS</div></div>
+      <div class="cbox"><div class="num" id="cd-mins">00</div><div class="lbl">MINS</div></div>
+      <div class="cbox"><div class="num" id="cd-secs">00</div><div class="lbl">SECS</div></div>
+    </div>
+  </section>
+
+  <section id="cake" class="cake-wrap">
+    <span class="tag">04 // FINAL BOSS</span>
+    <h2 style="border:none; padding:0;">There is no cake.</h2>
+    <p style="color:#a9d9b8; margin-top:-14px;">(there is definitely cake)</p>
+    <div style="font-size:5rem; line-height:1;">🎂</div>
+    <button class="cake-btn" id="blowBtn">BLOW OUT THE CANDLE FATASS</button>
+    <div class="cake-msg" id="cakeMsg"></div>
+  </section>
+
+</main>
+
+<footer>
+  COMPILED WITH LOVE, ZERO BUGS GUARANTEED &mdash; HAPPY BIRTHDAY, FATASS NEO &mdash; 07 / 16
+</footer>
+
+<button id="audioToggle" class="muted" aria-label="Toggle background music">
+  <span class="bars"><span></span><span></span><span></span></span>
+  <span id="audioLabel">MUSIC OFF</span>
+</button>
+<audio id="bgm" src="audio0.mp3" loop preload="auto"></audio>
+
+<script>
+/* ---------------- MATRIX RAIN ---------------- */
+const canvas = document.getElementById('rain');
+const ctx = canvas.getContext('2d');
+let w, h, columns, drops;
+const chars = "アイウエオカキクケコサシスセソタチツテト0123456789NEO";
+const fontSize = 16;
+
+function resize(){
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+  columns = Math.floor(w / fontSize);
+  drops = new Array(columns).fill(0).map(()=> Math.random() * -50);
+}
+window.addEventListener('resize', resize);
+resize();
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function drawRain(){
+  ctx.fillStyle = 'rgba(5,8,6,0.08)';
+  ctx.fillRect(0,0,w,h);
+  ctx.font = fontSize + 'px monospace';
+  for(let i=0;i<columns;i++){
+    const text = chars[Math.floor(Math.random()*chars.length)];
+    const isNeo = text === 'N' || text === 'E' || text === 'O';
+    ctx.fillStyle = isNeo ? '#ffb000' : '#00ff66';
+    ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+    if(drops[i]*fontSize > h && Math.random() > 0.975){
+      drops[i] = 0;
+    }
+    drops[i]++;
+  }
+}
+if(!reduceMotion){
+  setInterval(drawRain, 45);
+} else {
+  ctx.fillStyle = '#050806';
+  ctx.fillRect(0,0,w,h);
+}
+
+/* ---------------- GATE / AUDIO ---------------- */
+const gate = document.getElementById('gate');
+const enterBtn = document.getElementById('enterBtn');
+const bgm = document.getElementById('bgm');
+const audioToggle = document.getElementById('audioToggle');
+const audioLabel = document.getElementById('audioLabel');
+
+setTimeout(()=> enterBtn.classList.add('show'), 3300);
+
+let musicOn = false;
+function startMusic(){
+  bgm.volume = 0.18; // low volume, ambient
+  bgm.play().then(()=>{
+    musicOn = true;
+    audioToggle.classList.remove('muted');
+    audioLabel.textContent = 'MUSIC ON';
+  }).catch(()=>{
+    musicOn = false;
+    audioToggle.classList.add('muted');
+    audioLabel.textContent = 'MUSIC OFF';
+  });
+}
+
+enterBtn.addEventListener('click', ()=>{
+  gate.classList.add('hidden');
+  startMusic();
+});
+
+audioToggle.addEventListener('click', ()=>{
+  if(musicOn){
+    bgm.pause();
+    musicOn = false;
+    audioToggle.classList.add('muted');
+    audioLabel.textContent = 'MUSIC OFF';
+  } else {
+    startMusic();
+  }
+});
+
+/* ---------------- PILL CHOICE ---------------- */
+const pillReveal = document.getElementById('pillReveal');
+document.querySelectorAll('.pill-card').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    const type = card.dataset.pill;
+    if(type === 'blue'){
+      pillReveal.textContent = "ERROR 404: DENIAL NOT FOUND. AGE INCREMENTED ANYWAY.";
+    } else {
+      pillReveal.textContent = "TRUTH ACCEPTED. WELCOME TO ONE MORE YEAR OF LEGEND, ASSFACE.";
+    }
+  });
+});
+
+/* ---------------- COUNTDOWN ---------------- */
+function nextBirthday(){
+  const now = new Date();
+  let year = now.getFullYear();
+  let target = new Date(year, 6, 16, 0, 0, 0); // July is month 6
+  if(target < now){
+    target = new Date(year+1, 6, 16, 0, 0, 0);
+  }
+  return target;
+}
+function updateCountdown(){
+  const now = new Date();
+  const target = nextBirthday();
+  let diff = target - now;
+  if(diff < 0) diff = 0;
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff / (1000*60*60)) % 24);
+  const mins = Math.floor((diff / (1000*60)) % 60);
+  const secs = Math.floor((diff / 1000) % 60);
+  document.getElementById('cd-days').textContent = String(days).padStart(2,'0');
+  document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('cd-mins').textContent = String(mins).padStart(2,'0');
+  document.getElementById('cd-secs').textContent = String(secs).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+/* ---------------- CAKE + CONFETTI ---------------- */
+const blowBtn = document.getElementById('blowBtn');
+const cakeMsg = document.getElementById('cakeMsg');
+const confettiCanvas = document.getElementById('confetti-canvas');
+const cctx = confettiCanvas.getContext('2d');
+confettiCanvas.width = window.innerWidth;
+confettiCanvas.height = window.innerHeight;
+window.addEventListener('resize', ()=>{
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+});
+
+let confettiPieces = [];
+const confettiColors = ['#00ff66','#ffb000','#ff3b3b','#3ba7ff','#d9ffe4'];
+
+function spawnConfetti(){
+  confettiPieces = [];
+  for(let i=0;i<160;i++){
+    confettiPieces.push({
+      x: Math.random()*confettiCanvas.width,
+      y: -20 - Math.random()*confettiCanvas.height*0.5,
+      size: 4 + Math.random()*6,
+      speedY: 2 + Math.random()*3,
+      speedX: (Math.random()-0.5)*2,
+      rotation: Math.random()*360,
+      rotSpeed: (Math.random()-0.5)*10,
+      color: confettiColors[Math.floor(Math.random()*confettiColors.length)]
+    });
+  }
+  animateConfetti();
+}
+let confettiFrame = 0;
+function animateConfetti(){
+  cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+  let stillFalling = false;
+  confettiPieces.forEach(p=>{
+    p.y += p.speedY;
+    p.x += p.speedX;
+    p.rotation += p.rotSpeed;
+    if(p.y < confettiCanvas.height + 20) stillFalling = true;
+    cctx.save();
+    cctx.translate(p.x, p.y);
+    cctx.rotate(p.rotation * Math.PI/180);
+    cctx.fillStyle = p.color;
+    cctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
+    cctx.restore();
+  });
+  confettiFrame++;
+  if(stillFalling && confettiFrame < 400){
+    requestAnimationFrame(animateConfetti);
+  } else {
+    cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+  }
+}
+
+const cakeMessages = [
+  "SIMULATION UPDATED: Neo.exe is now running on a newer, wiser build.",
+  "Candle extinguished. Wish encrypted and sent to the mainframe.",
+  "Achievement unlocked: Survived another orbit around the sun.",
+  "No spoons were bent, but a candle was defeated. Happy birthday, Bro, Assface Neo."
+];
+let msgIndex = 0;
+blowBtn.addEventListener('click', ()=>{
+  cakeMsg.textContent = cakeMessages[msgIndex % cakeMessages.length];
+  msgIndex++;
+  spawnConfetti();
+});
+</script>
+</body>
+</html>
