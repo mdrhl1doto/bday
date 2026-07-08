@@ -302,6 +302,17 @@
     .scroll-cue{ animation:none !important; }
     #audioToggle .bars span{ animation:none !important; }
   }
+
+  /* profile image */
+  .profile-pic{
+    width:140px;
+    height:140px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid var(--green);
+    box-shadow:0 0 22px var(--green-glow);
+    margin-bottom:20px;
+  }
 </style>
 </head>
 <body>
@@ -320,6 +331,7 @@
 </div>
 
 <header>
+  <img src="image.jpeg" alt="Birthday photo" class="profile-pic">
   <span class="eyebrow">SIMULATION // BIRTHDAY BUILD v16.07</span>
   <h1 class="glitch" data-text="WAKE UP, NEO">
     <span class="base">WAKE UP, FATASS NEO</span>
