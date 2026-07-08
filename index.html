@@ -396,6 +396,7 @@
   <span id="audioLabel">MUSIC OFF</span>
 </button>
 <audio id="bgm" src="audio0.mp3" loop preload="auto"></audio>
+<audio id="bgm2" src="audio1.mp3" preload="auto"></audio>
 
 <script>
 /* ---------------- MATRIX RAIN ---------------- */
@@ -442,6 +443,7 @@ if(!reduceMotion){
 const gate = document.getElementById('gate');
 const enterBtn = document.getElementById('enterBtn');
 const bgm = document.getElementById('bgm');
+const bgm2 = document.getElementById('bgm2');
 const audioToggle = document.getElementById('audioToggle');
 const audioLabel = document.getElementById('audioLabel');
 
@@ -583,6 +585,16 @@ blowBtn.addEventListener('click', ()=>{
   cakeMsg.textContent = cakeMessages[msgIndex % cakeMessages.length];
   msgIndex++;
   spawnConfetti();
+
+  // stop the background track and hand off to the candle-blow track
+  bgm.pause();
+  musicOn = false;
+  audioToggle.classList.add('muted');
+  audioLabel.textContent = 'MUSIC OFF';
+
+  bgm2.volume = 0.18;
+  bgm2.currentTime = 0;
+  bgm2.play().catch(()=>{ /* ignored if blocked */ });
 });
 </script>
 </body>
